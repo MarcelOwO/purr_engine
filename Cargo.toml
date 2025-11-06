@@ -1,6 +1,15 @@
 [package]
-name = "PurrEngine"
+name = "purrengine"
 version = "0.1.0"
 edition = "2024"
 
+[lib]
+name = "purrengine"
+path = "src/engine/mod.rs"
+
+[[bin]]
+name = "engine_test"
+path = "src/main.rs"
+
 [dependencies]
+winit = "0.30.12"
