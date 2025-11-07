@@ -8,27 +8,43 @@ struct WindowWinit {
 }
 
 impl WindowWinit {
-
+    fn new() -> Self {
+        Self { window: None }
+    }
 }
 
-impl ApplicationHandler for WindowWinit{
+impl ApplicationHandler for WindowWinit {
     fn new_events(&mut self, event_loop: &ActiveEventLoop, cause: StartCause) {
         todo!()
     }
 
     fn resumed(&mut self, event_loop: &ActiveEventLoop) {
-        self.window = Some(event_loop.create_window(Window::default_attributes()).unwrap());
+        self.window = Some(
+            event_loop
+                .create_window(Window::default_attributes())
+                .unwrap(),
+        );
     }
 
     fn user_event(&mut self, event_loop: &ActiveEventLoop, event: ()) {
         todo!()
     }
 
-    fn window_event(&mut self, event_loop: &ActiveEventLoop, window_id: WindowId, event: WindowEvent) {
+    fn window_event(
+        &mut self,
+        event_loop: &ActiveEventLoop,
+        window_id: WindowId,
+        event: WindowEvent,
+    ) {
         todo!()
     }
 
-    fn device_event(&mut self, event_loop: &ActiveEventLoop, device_id: DeviceId, event: DeviceEvent) {
+    fn device_event(
+        &mut self,
+        event_loop: &ActiveEventLoop,
+        device_id: DeviceId,
+        event: DeviceEvent,
+    ) {
         todo!()
     }
 
@@ -48,5 +64,3 @@ impl ApplicationHandler for WindowWinit{
         todo!()
     }
 }
-
-

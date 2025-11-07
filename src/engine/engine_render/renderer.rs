@@ -1,11 +1,21 @@
-use crate::engine_entities::entitie::Entity;
+use crate::engine_entities::component::Component;
+use crate::engine_entities::entity_type::EntityType;
+use std::cell::RefCell;
+use std::rc::Rc;
 
-pub(crate) struct Renderer {}
-
-impl Renderer {
-    pub(crate) fn new() -> Self {
-        Self {}
-    }
-    pub(crate) fn render(&self, render_queue: Vec<&mut Box<dyn Entity>>, cameras: Vec<&mut Box<dyn Entity>>) {}
+pub(crate) struct Renderer {
+    components: Vec<u64>,
 }
 
+impl Renderer {
+    pub(crate) fn register_components(&mut self, components: Vec< u64>) {
+        self.components = components;
+    }
+
+    pub(crate) fn new() -> Self {
+        Self {
+            components: Vec::new(),
+        }
+    }
+    pub(crate) fn render(&self) {}
+}

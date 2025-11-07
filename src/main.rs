@@ -1,25 +1,15 @@
-mod test_game;
-
-use engine_core::settings::Settings;
-use engine_runner::runner::Runner;
-use purrengine::{engine_core, engine_runner};
+pub mod test_game;
+use purrengine::engine_builder::builder::Builder;
+use test_game::test_game_scene::TestGameScene;
+use test_game::test_game_ui::TestGameUI;
 
 fn main() {
-    let settings = Settings {
-        app_name: String::from("Test Game"),
-    };
-
-    let mut runner = Runner::new(settings);
-
-    let mut test_scene = test_game::test_scene::TestScene::new();
-    
-    
-
-    //test_scene.add_actor();
-
-    runner.add_scene(Box::new(test_scene));
-
-    runner.init();
-
-    runner.run();
+    Builder::new()
+        .configure(|options| {
+            options.app_name = String::from("Test Game");
+        })
+        .register_module::<TestGameScene>()
+        .register_module::<TestGameUI>()
+        .build()
+        .run();
 }

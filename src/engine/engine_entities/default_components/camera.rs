@@ -1,22 +1,25 @@
 use crate::engine_entities::actors::Actor;
-use crate::engine_entities::entitie::Entity;
+use crate::engine_entities::component::Component;
+use crate::engine_entities::component_store::ComponentStore;
 use crate::engine_entities::entity_type::EntityType;
 
-struct Camera<'a> {
+pub struct Camera<'a> {
     entity_type: EntityType,
     actor: &'a Actor,
+    id : u64,
 }
 
 impl<'a> Camera<'a> {
-    fn new(actor: &'a Actor) -> Self {
+    pub fn new(actor: &'a Actor) -> Self {
         Self {
             entity_type: EntityType::Camera,
-            actor
+            actor,
+            id: 0,
         }
     }
 }
 
-impl<'a> Entity for Camera<'a> {
+impl<'a> Component for Camera<'a> {
     fn init(&mut self) {}
 
     fn update(&mut self) {}
@@ -27,5 +30,9 @@ impl<'a> Entity for Camera<'a> {
 
     fn get_actor(&self) -> &Actor {
         &self.actor
+    }
+
+    fn get_id(&self) -> u64 {
+        self.id
     }
 }

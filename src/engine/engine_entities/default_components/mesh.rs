@@ -1,5 +1,6 @@
 use crate::engine_entities::actors::Actor;
-use crate::engine_entities::entitie::Entity;
+use crate::engine_entities::component::Component;
+use crate::engine_entities::component_store::ComponentStore;
 use crate::engine_entities::entity_type::EntityType;
 struct Mesh<'a> {
     entity_type: EntityType,
@@ -13,7 +14,7 @@ impl<'a> Mesh<'a>{
 
 }
 
-impl<'a> Entity for Mesh<'a> {
+impl<'a> Component for Mesh<'a> {
     fn init(&mut self) {
 
     }
@@ -25,5 +26,9 @@ impl<'a> Entity for Mesh<'a> {
     }
     fn get_actor(&self) ->&Actor {
         &self.actor
+    }
+
+    fn get_id(&self) -> u64 {
+        todo!()
     }
 }

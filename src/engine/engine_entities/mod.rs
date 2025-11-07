@@ -1,5 +1,6 @@
 pub mod actors;
-pub mod entitie;
+pub mod component;
 pub mod transform;
-pub mod default_entities;
+pub mod default_components;
 pub mod entity_type;
+pub(crate) mod component_store;
