@@ -34,7 +34,7 @@ impl Builder {
 
     //build and optimize stuff
     pub fn build(&mut self) -> &mut Self {
-        let app = App::new(self.settings.take().unwrap());
+        let mut app = App::new(self.settings.take().unwrap());
         app.register_modules(self.modules.drain(..).collect());
         self.app = Some(app);
         self
@@ -42,8 +42,7 @@ impl Builder {
 
     //start and run the app
     pub fn run(&mut self) {
-        let mut app = self.app.take().unwrap();
+        let app = self.app.take().unwrap();
         app.init();
-        app.run();
     }
 }

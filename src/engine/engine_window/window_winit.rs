@@ -1,66 +1,97 @@
-use winit::application::ApplicationHandler;
-use winit::event::{DeviceEvent, DeviceId, StartCause, WindowEvent};
-use winit::event_loop::{ActiveEventLoop, ControlFlow, EventLoop};
-use winit::window::{Window, WindowId};
+/// Window implementation using winit
+///
+/// Absolute mess since it required a seperate runner? So 2 struct... i guess
+use crate::{
+    engine_core::logging::logger::Logger,
+    engine_window::{
+        window_error::{Result, WindowError},
+        window_impl::WindowImpl,
+    },
+};
+use std::sync::Arc;
 
-struct WindowWinit {
-    window: Option<Window>,
+use winit::{
+    application::ApplicationHandler,
+    dpi::Size,
+    event::{DeviceEvent, DeviceId, StartCause, WindowEvent},
+    event_loop::{ActiveEventLoop, ControlFlow, EventLoop, EventLoopBuilder},
+    platform::{pump_events::EventLoopExtPumpEvents, run_on_demand::EventLoopExtRunOnDemand},
+    window::{Window, WindowAttributes, WindowId},
+};
+
+pub(crate) struct WindowWinit {
+    logger: Arc<dyn Logger>,
 }
 
 impl WindowWinit {
-    fn new() -> Self {
-        Self { window: None }
+    pub(crate) fn new(logger: Arc<dyn Logger>) -> Self {
+        logger.log("create winit subsystem");
+        Self {
+            logger: logger.clone(),
+        }
     }
 }
 
-impl ApplicationHandler for WindowWinit {
-    fn new_events(&mut self, event_loop: &ActiveEventLoop, cause: StartCause) {
-        todo!()
-    }
+impl WindowImpl<()> for WindowWinit {
+    fn run(&mut self) -> Result<()> {
+        self.logger.log("Starting window event loop");
 
+        let event_loop = EventLoop::new().unwrap();
+
+        let mut app = WinitApp::new(self.logger.clone());
+
+        event_loop.run_app(&mut app);
+        Ok(())
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+struct WinitApp {
+    window: Option<Window>,
+    logger: Arc<dyn Logger>,
+}
+
+impl WinitApp {
+    fn new(logger: Arc<dyn Logger>) -> Self {
+        logger.log("Creating winit runner");
+        Self {
+            window: None,
+            logger,
+        }
+    }
+}
+
+impl ApplicationHandler for WinitApp {
     fn resumed(&mut self, event_loop: &ActiveEventLoop) {
-        self.window = Some(
-            event_loop
-                .create_window(Window::default_attributes())
-                .unwrap(),
-        );
+        self.logger.log("Resuned window and created window");
+        let mut attributes = WindowAttributes::default();
+
+        attributes.fullscreen = Some(winit::window::Fullscreen::Borderless(None));
+        attributes.title = "OwO".to_string();
+
+        attributes.inner_size = Some(Size::Logical(winit::dpi::LogicalSize {
+            width: 800.0,
+            height: 600.0,
+        }));
+
+        let window = event_loop.create_window(attributes).unwrap();
+
+        window.set_visible(true);
+        window.set_cursor_visible(true);
+        self.window = Some(window)
     }
 
-    fn user_event(&mut self, event_loop: &ActiveEventLoop, event: ()) {
-        todo!()
-    }
-
-    fn window_event(
-        &mut self,
-        event_loop: &ActiveEventLoop,
-        window_id: WindowId,
-        event: WindowEvent,
-    ) {
-        todo!()
-    }
-
-    fn device_event(
-        &mut self,
-        event_loop: &ActiveEventLoop,
-        device_id: DeviceId,
-        event: DeviceEvent,
-    ) {
-        todo!()
-    }
-
-    fn about_to_wait(&mut self, event_loop: &ActiveEventLoop) {
-        todo!()
-    }
-
-    fn suspended(&mut self, event_loop: &ActiveEventLoop) {
-        todo!()
-    }
-
-    fn exiting(&mut self, event_loop: &ActiveEventLoop) {
-        todo!()
-    }
-
-    fn memory_warning(&mut self, event_loop: &ActiveEventLoop) {
-        todo!()
+    fn window_event(&mut self, event_loop: &ActiveEventLoop, id: WindowId, event: WindowEvent) {
+        match event {
+            WindowEvent::CloseRequested => {
+                self.logger.log("The close button was pressed; stopping");
+                event_loop.exit();
+            }
+            _ => {
+                let event_name = format!("{event:?}");
+                self.logger.log(event_name.as_str())
+            }
+        }
     }
 }

@@ -1,3 +1,3 @@
-pub trait Logger {
-    fn log(msg: String) where Self: Sized;
+pub trait Logger: Send + Sync {
+    fn log(&self, msg: &str);
 }

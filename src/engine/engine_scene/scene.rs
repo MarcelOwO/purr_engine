@@ -11,9 +11,6 @@ impl Scene {
             actors: HashMap::new(),
         }
     }
-}
-
-impl Scene {
     pub(crate) fn mutate(&mut self, mut f: impl FnMut(&mut Actor)) {
         for actor in self.actors.values_mut() {
             f(actor);

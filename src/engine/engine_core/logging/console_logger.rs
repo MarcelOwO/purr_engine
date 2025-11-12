@@ -3,14 +3,12 @@ pub(crate) struct ConsoleLogger {}
 
 impl ConsoleLogger {
     pub(crate) fn new() -> Self {
-        Self{}
+        Self {}
     }
 }
 
 impl Logger for ConsoleLogger {
-
-
-    fn log(msg: String) {
+    fn log(&self, msg: &str) {
         println!("{}", msg)
     }
 }

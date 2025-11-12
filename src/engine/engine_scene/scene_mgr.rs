@@ -1,9 +1,12 @@
+use crate::engine_core::{identifier::uuid::get_uuid, logging::logger::Logger};
 use crate::engine_scene::scene::Scene;
 use std::collections::HashMap;
+use std::sync::Arc;
 
 pub(crate) struct SceneManager {
     scenes: HashMap<u64, Scene>,
     active_scenes: Vec<u64>,
+    logger: Arc<dyn Logger>,
 }
 
 impl SceneManager {
@@ -13,10 +16,11 @@ impl SceneManager {
 }
 
 impl SceneManager {
-    pub(crate) fn new() -> Self {
+    pub(crate) fn new(logger: Arc<dyn Logger>) -> Self {
         Self {
             scenes: HashMap::new(),
             active_scenes: Vec::new(),
+            logger,
         }
     }
 
@@ -28,10 +32,13 @@ impl SceneManager {
         }
     }
 
-    pub(crate) fn add_scene(&mut self, id: u64, scene: Scene) {
+    pub(crate) fn add_scene(&mut self, scene: Scene) {
+        self.logger.log("Adding new scene");
+        let id = get_uuid();
         self.scenes.insert(id, scene);
     }
     fn remove_scene(&mut self, id: u64) {
+        self.logger.log("removing  Scene");
         self.scenes.remove(&id);
         self.set_scene_inactive(id);
     }

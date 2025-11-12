@@ -1,7 +1,8 @@
+use crate::engine_core::frame_data::FrameData;
 use crate::engine_entities::actors::Actor;
 use crate::engine_entities::component::Component;
-use crate::engine_entities::entity_type::EntityType;
 use crate::engine_entities::component_store::ComponentStore;
+use crate::engine_entities::entity_type::EntityType;
 use std::cmp::PartialEq;
 use std::mem;
 
@@ -20,16 +21,15 @@ impl<'a> MeshRenderer<'a> {
 }
 
 impl PartialEq for EntityType {
-    fn eq(& self, other: & Self) -> bool {
+    fn eq(&self, other: &Self) -> bool {
         mem::discriminant(self) == mem::discriminant(other)
     }
 }
 
 impl<'a> Component for MeshRenderer<'a> {
-    fn init(&mut self) {
-    }
+    fn init(&mut self) {}
 
-    fn update(&mut self) {}
+    fn update(&mut self, frame_data: &FrameData) {}
 
     fn get_type(&self) -> &EntityType {
         &self.entity_type
