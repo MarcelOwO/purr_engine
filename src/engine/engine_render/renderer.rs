@@ -1,7 +1,7 @@
 use crate::engine_core::frame_data::FrameData;
 use crate::engine_entities::component::Component;
 use crate::engine_entities::component_store::ComponentStore;
-use crate::engine_entities::entity_type::EntityType;
+use crate::engine_entities::entity_type::ComponentType;
 use std::cell::RefCell;
 use std::rc::Rc;
 

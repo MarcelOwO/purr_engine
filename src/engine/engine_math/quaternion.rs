@@ -1,4 +1,4 @@
-
+#[derive(Debug, Clone, Copy)]
 pub struct Quaternion {}
 
 impl Quaternion {

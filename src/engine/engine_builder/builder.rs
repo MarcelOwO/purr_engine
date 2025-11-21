@@ -1,48 +1,40 @@
 use crate::engine_app::app::App;
-use crate::engine_core::module::Module;
+use crate::engine_assets::asset::Asset;
+use crate::engine_assets::asset_manager::AssetManager;
 use crate::engine_core::settings::Settings;
+use crate::engine_scene::scene::Scene;
 
 //scuffed builder pattern for app
 pub struct Builder {
-    app: Option<App>,
-    settings: Option<Settings>,
-    modules: Vec<Box<dyn Module>>,
+    app: App,
 }
 
 impl Builder {
-    //create empty builder
     pub fn new() -> Self {
         Self {
-            app: None,
-            settings: None,
-            modules: Vec::new(),
+            app: App::new(Settings::default()),
         }
     }
 
-    //configure settings
     pub fn configure(&mut self, mut f: impl FnMut(&mut Settings)) -> &mut Self {
         let mut settings = Settings::default();
         f(&mut settings);
-        self.settings = Some(settings);
+        self.app.update_setting(settings);
+        self
+    }
+    pub fn add_assets(&mut self, mut f: impl FnMut(&mut AssetManager)) -> &mut Self {
+        self.app.mut_asset_manager(|asset_manager| f(asset_manager));
         self
     }
 
-    pub fn register_module<T: Module + Default + 'static>(&mut self) -> &mut Self {
-        self.modules.push(Box::new(T::default()));
-        self
-    }
-
-    //build and optimize stuff
-    pub fn build(&mut self) -> &mut Self {
-        let mut app = App::new(self.settings.take().unwrap());
-        app.register_modules(self.modules.drain(..).collect());
-        self.app = Some(app);
+    pub fn add_scene(&mut self, mut f: impl FnMut(&mut App, u64)) -> &mut Self {
+        let scene_id = self.app.create_scene();
+        f(&mut self.app, scene_id);
         self
     }
 
     //start and run the app
     pub fn run(&mut self) {
-        let app = self.app.take().unwrap();
-        app.init();
+        self.app.run();
     }
 }

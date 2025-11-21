@@ -1,4 +1,4 @@
-pub(crate) enum EntityType {
+pub(crate) enum ComponentType {
     Camera,
     Mesh,
     MeshRenderer,

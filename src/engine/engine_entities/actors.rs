@@ -1,5 +1,5 @@
 use crate::engine_entities::transform::Transform;
-
+#[derive(Clone)]
 pub struct Actor {
     name: String,
     transform: Transform,
@@ -18,17 +18,12 @@ impl Actor {
             is_active: true,
         }
     }
-    pub(crate) fn mutate(&mut self, mut f: impl FnMut(u64)) {
-        for actor in self.entities.clone() {
-            f(actor);
-        }
-    }
-
     pub fn add_component(&mut self, component: u64) {
         self.entities.push(component);
     }
-
-    pub fn get_components(&mut self) -> &mut Vec<u64> {
-        &mut self.entities
+    pub(crate) fn mut_components(&mut self, mut f: impl FnMut(u64)) {
+        for actor in &mut self.entities {
+            f(*actor);
+        }
     }
 }

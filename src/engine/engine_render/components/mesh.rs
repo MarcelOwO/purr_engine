@@ -1,34 +1,32 @@
-use crate::engine_core::frame_data::FrameData;
-use crate::engine_entities::actors::Actor;
 use crate::engine_entities::component::Component;
-use crate::engine_entities::entity_type::EntityType;
-struct Mesh<'a> {
-    entity_type: EntityType,
-    actor: &'a Actor,
+use crate::engine_entities::entity_type::ComponentType;
+
+struct Mesh {
+    asset: String,
+    entity_type: ComponentType,
+    own_id: u64,
+    actor_id: u64,
 }
 
-impl<'a> Mesh<'a> {
-    fn new(actor: &'a Actor) -> Self {
+impl Mesh {
+    fn new(asset: String) -> Self {
         Self {
-            entity_type: EntityType::Mesh,
-            actor,
+            entity_type: ComponentType::Mesh,
+            asset,
+            own_id: 0,
+            actor_id: 0,
         }
     }
 }
 
-impl<'a> Component for Mesh<'a> {
-    fn init(&mut self) {}
-
-    fn update(&mut self, frame_data: &FrameData) {}
-
-    fn get_type(&self) -> &EntityType {
+impl Component for Mesh {
+    fn get_type(&self) -> &ComponentType {
         &self.entity_type
     }
-    fn get_actor(&self) -> &Actor {
-        &self.actor
+    fn get_actor_id(&self) -> u64 {
+        self.actor_id
     }
-
     fn get_id(&self) -> u64 {
-        todo!()
+        self.own_id
     }
 }

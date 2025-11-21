@@ -1,14 +1,10 @@
 /// Window implementation using winit
 ///
 /// Absolute mess since it required a seperate runner? So 2 struct... i guess
-use crate::{
-    engine_core::logging::logger::Logger,
-    engine_window::{
-        window_error::{Result, WindowError},
-        window_impl::WindowImpl,
-    },
-};
-use std::sync::Arc;
+///
+///
+use crate::{engine_core::logging::logger::Logger, engine_window::window_impl::WindowImpl};
+use std::rc::Rc;
 
 use winit::{
     application::ApplicationHandler,
@@ -20,11 +16,11 @@ use winit::{
 };
 
 pub(crate) struct WindowWinit {
-    logger: Arc<dyn Logger>,
+    logger: Rc<dyn Logger>,
 }
 
 impl WindowWinit {
-    pub(crate) fn new(logger: Arc<dyn Logger>) -> Self {
+    pub(crate) fn new(logger: Rc<dyn Logger>) -> Self {
         logger.log("create winit subsystem");
         Self {
             logger: logger.clone(),
@@ -33,15 +29,15 @@ impl WindowWinit {
 }
 
 impl WindowImpl<()> for WindowWinit {
-    fn run(&mut self) -> Result<()> {
-        self.logger.log("Starting window event loop");
+    fn run(&mut self) {}
 
+    fn init(&mut self) {
+        self.logger.log("Starting window event loop");
         let event_loop = EventLoop::new().unwrap();
 
         let mut app = WinitApp::new(self.logger.clone());
 
         event_loop.run_app(&mut app);
-        Ok(())
     }
 }
 
@@ -49,11 +45,11 @@ impl WindowImpl<()> for WindowWinit {
 
 struct WinitApp {
     window: Option<Window>,
-    logger: Arc<dyn Logger>,
+    logger: Rc<dyn Logger>,
 }
 
 impl WinitApp {
-    fn new(logger: Arc<dyn Logger>) -> Self {
+    fn new(logger: Rc<dyn Logger>) -> Self {
         logger.log("Creating winit runner");
         Self {
             window: None,
@@ -68,6 +64,7 @@ impl ApplicationHandler for WinitApp {
         let mut attributes = WindowAttributes::default();
 
         attributes.fullscreen = Some(winit::window::Fullscreen::Borderless(None));
+
         attributes.title = "OwO".to_string();
 
         attributes.inner_size = Some(Size::Logical(winit::dpi::LogicalSize {
@@ -83,15 +80,7 @@ impl ApplicationHandler for WinitApp {
     }
 
     fn window_event(&mut self, event_loop: &ActiveEventLoop, id: WindowId, event: WindowEvent) {
-        match event {
-            WindowEvent::CloseRequested => {
-                self.logger.log("The close button was pressed; stopping");
-                event_loop.exit();
-            }
-            _ => {
-                let event_name = format!("{event:?}");
-                self.logger.log(event_name.as_str())
-            }
-        }
+        let event_name = format!("{event:?}");
+        self.logger.log(event_name.as_str()) ;
     }
 }

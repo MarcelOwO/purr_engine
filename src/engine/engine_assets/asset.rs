@@ -3,7 +3,7 @@ pub struct Asset {
 }
 
 impl Asset {
-    fn new(path: String) -> Self {
+    pub fn new(path: String) -> Self {
         Self{path}
     }
     fn load(&self) {}
