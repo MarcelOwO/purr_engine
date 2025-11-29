@@ -1,8 +1,7 @@
 use crate::engine_app::app::App;
-use crate::engine_assets::asset::Asset;
 use crate::engine_assets::asset_manager::AssetManager;
 use crate::engine_core::settings::Settings;
-use crate::engine_scene::scene::Scene;
+use crate::engine_entities::{actors::Actor, component::Component};
 
 //scuffed builder pattern for app
 pub struct Builder {
@@ -31,6 +30,12 @@ impl Builder {
         let scene_id = self.app.create_scene();
         f(&mut self.app, scene_id);
         self
+    }
+
+    pub fn add_scenes(&mut self, actors: Vec<(Actor, Vec<Box<dyn Component>>)>) {
+        for (actor, components) in actors {
+            self.app.add_actor_with_components(actor, components);
+        }
     }
 
     //start and run the app

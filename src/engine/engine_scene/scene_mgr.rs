@@ -38,7 +38,9 @@ impl SceneManager {
             }
         }
     }
-
+    pub(crate) fn mut_scene(&mut self, scene_id: u64, mut f: impl FnMut(&mut Scene)) {
+        self.scenes.get_mut(&scene_id).map(|scene| f(scene));
+    }
 
     pub(crate) fn create_scene(&mut self) -> u64 {
         let scene = Scene::new();
